@@ -1,18 +1,13 @@
-using System.Collections;
-using UnityEngine;
-using UnityEngine.Networking;
+﻿using UnityEngine;
 using TMPro;
+using UnityEngine.SceneManagement;
 
 public class Login : MonoBehaviour
 {
-    [Header("UI")]
+    [Header("UI Referenzen")]
     public TMP_InputField usernameInput;
     public TMP_InputField passwordInput;
     public TMP_Text messageText;
-
-    [Header("Server URLs")]
-    public string loginUrl = "https://deinserver.de/api/login";     // anpassen
-    public string registerUrl = "https://deinserver.de/api/register"; // anpassen
 
     [System.Serializable]
     public class AuthRequest
@@ -30,80 +25,64 @@ public class Login : MonoBehaviour
         public string token;
     }
 
-    // Button: Registrieren
-    public void OnClickRegister()
+    void Update()
     {
-        SendAuth(registerUrl);
+        // ENTER = Login bestätigen
+        if (Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.KeypadEnter))
+        {
+            OnLoginClicked();
+        }
     }
 
-    // Button: Login
-    public void OnClickLogin()
+    // Wird vom Login-Button aufgerufen (und von ENTER)
+    public void OnLoginClicked()
     {
-        SendAuth(loginUrl);
-    }
-
-    void SendAuth(string url)
-    {
-        string username = usernameInput.text;
-        string password = passwordInput.text;
+        string username = usernameInput != null ? usernameInput.text : "";
+        string password = passwordInput != null ? passwordInput.text : "";
 
         if (string.IsNullOrWhiteSpace(username) || string.IsNullOrWhiteSpace(password))
         {
-            messageText.text = "Bitte Benutzername und Passwort eingeben.";
+            ShowMessage("Bitte Benutzername und Passwort eingeben.");
             return;
         }
 
-        AuthRequest req = new AuthRequest
+        // Fake-Request (nur für Debug)
+        AuthRequest req = new AuthRequest { username = username, password = password };
+        string reqJson = JsonUtility.ToJson(req);
+        Debug.Log("[LOGIN] Würde JSON senden: " + reqJson);
+
+        // Fake-Response
+        AuthResponse resp = new AuthResponse
         {
-            username = username,
-            password = password
+            success = true,
+            message = "Login erfolgreich!",
+            userId = 1,
+            token = "FAKE_TOKEN"
         };
 
-        string json = JsonUtility.ToJson(req);
-        StartCoroutine(PostJson(url, json));
+        string respJson = JsonUtility.ToJson(resp);
+        Debug.Log("[LOGIN] Würde JSON zurückbekommen: " + respJson);
+
+        ShowMessage(resp.message);
+
+        if (resp.success)
+        {
+            // 🔥 Benutzername für die Session merken
+            SessionData.CurrentUserName = username;
+            Debug.Log("[LOGIN] SessionData.CurrentUserName = " + SessionData.CurrentUserName);
+
+            // Zur Homepage wechseln
+            SceneManager.LoadScene("Homepage_Mischa");
+        }
     }
 
-    IEnumerator PostJson(string url, string json)
+    private void ShowMessage(string text)
     {
-        byte[] bodyRaw = System.Text.Encoding.UTF8.GetBytes(json);
-
-        using (UnityWebRequest www = new UnityWebRequest(url, "POST"))
+        if (messageText != null)
         {
-            www.uploadHandler = new UploadHandlerRaw(bodyRaw);
-            www.downloadHandler = new DownloadHandlerBuffer();
-            www.SetRequestHeader("Content-Type", "application/json");
-
-            yield return www.SendWebRequest();
-
-            if (www.result != UnityWebRequest.Result.Success)
-            {
-                messageText.text = "Netzwerkfehler: " + www.error;
-                yield break;
-            }
-
-            string responseJson = www.downloadHandler.text;
-            Debug.Log("Response: " + responseJson);
-
-            AuthResponse resp = null;
-            try
-            {
-                resp = JsonUtility.FromJson<AuthResponse>(responseJson);
-            }
-            catch
-            {
-                messageText.text = "Fehler beim Lesen der Server-Antwort.";
-                yield break;
-            }
-
-            if (resp != null && resp.success)
-            {
-                messageText.text = "Erfolg: " + resp.message;
-                
-            }
-            else
-            {
-                messageText.text = "Fehler: " + (resp != null ? resp.message : "Unbekannter Fehler");
-            }
+            messageText.text = text;
         }
+
+        Debug.Log("[UI] " + text);
     }
 }
