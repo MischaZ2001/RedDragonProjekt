@@ -5,12 +5,14 @@ using UnityEngine.SceneManagement;
 public class HomepageUI : MonoBehaviour
 {
     [Header("UI Elemente")]
-    public TMP_Text usernameText;
+    public UnityEngine.UI.Image profileCircle;
+    public TMP_Text profileLetterText;
 
     public GameObject loginButton;
     public GameObject signInButton;
     public GameObject logoutButton;
 
+    /// <summary>Initializes the homepage UI based on login status.</summary>
     void Start()
     {
         Debug.Log("[HOMEPAGE] Start -> SessionData.CurrentUserName = " + SessionData.CurrentUserName);
@@ -19,8 +21,10 @@ public class HomepageUI : MonoBehaviour
 
         if (isLoggedIn)
         {
-            // Benutzer eingeloggt → alle Login/SignIn Buttons verstecken
-            usernameText.text = SessionData.CurrentUserName;
+            string user = SessionData.CurrentUserName;
+
+            profileLetterText.text = user.Substring(0, 1).ToUpper();
+            profileCircle.color = Color.red;
 
             loginButton.SetActive(false);
             signInButton.SetActive(false);
@@ -28,8 +32,8 @@ public class HomepageUI : MonoBehaviour
         }
         else
         {
-            // Kein Benutzer eingeloggt → alle Login/SignIn Buttons anzeigen
-            usernameText.text = "";
+            profileLetterText.text = "";
+            profileCircle.color = Color.white;
 
             loginButton.SetActive(true);
             signInButton.SetActive(true);
@@ -37,21 +41,20 @@ public class HomepageUI : MonoBehaviour
         }
     }
 
+    /// <summary>Logs the user out and resets the homepage UI.</summary>
     public void OnLogoutClicked()
     {
         Debug.Log("[HOMEPAGE] Logout geklickt");
 
-        // Session löschen
         SessionData.CurrentUserName = null;
 
-        // UI zurücksetzen
-        usernameText.text = "";
+        profileLetterText.text = "";
+        profileCircle.color = Color.white;
 
         loginButton.SetActive(true);
         signInButton.SetActive(true);
         logoutButton.SetActive(false);
 
-        // Optional: zurück zur Login-Szene
         SceneManager.LoadScene("Homepage_Mischa");
     }
 }

@@ -25,16 +25,16 @@ public class Login : MonoBehaviour
         public string token;
     }
 
+    /// <summary>Checks for Enter key to trigger login.</summary>
     void Update()
     {
-        // ENTER = Login bestätigen
         if (Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.KeypadEnter))
         {
             OnLoginClicked();
         }
     }
 
-    // Wird vom Login-Button aufgerufen (und von ENTER)
+    /// <summary>Validates input and performs the login process.</summary>
     public void OnLoginClicked()
     {
         string username = usernameInput != null ? usernameInput.text : "";
@@ -46,12 +46,10 @@ public class Login : MonoBehaviour
             return;
         }
 
-        // Fake-Request (nur für Debug)
         AuthRequest req = new AuthRequest { username = username, password = password };
         string reqJson = JsonUtility.ToJson(req);
         Debug.Log("[LOGIN] Würde JSON senden: " + reqJson);
 
-        // Fake-Response
         AuthResponse resp = new AuthResponse
         {
             success = true,
@@ -67,15 +65,14 @@ public class Login : MonoBehaviour
 
         if (resp.success)
         {
-            // 🔥 Benutzername für die Session merken
             SessionData.CurrentUserName = username;
             Debug.Log("[LOGIN] SessionData.CurrentUserName = " + SessionData.CurrentUserName);
 
-            // Zur Homepage wechseln
             SceneManager.LoadScene("Homepage_Mischa");
         }
     }
 
+    /// <summary>Displays a message in the UI and console.</summary>
     private void ShowMessage(string text)
     {
         if (messageText != null)
