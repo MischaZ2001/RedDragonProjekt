@@ -8,6 +8,18 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Homepage_Mischa.unity
     guid: 99c9720ab356a0642a771bea13969a05
+  - enabled: 1
+    path: Assets/Scenes/LocationPage_Mischa.unity
+    guid: a483c26da8552b94e977ce78c78e8163
+  - enabled: 1
+    path: Assets/Scenes/Locations_Mischa.unity
+    guid: 21ea9f185c5e4e640b9bc32d872ddf55
+  - enabled: 1
+    path: Assets/Scenes/Login_Mischa.unity
+    guid: 3ea6550f985f9734a92b424bb5c2e4ae
+  - enabled: 1
+    path: Assets/Scenes/SignIn_Mischa.unity
+    guid: 280d274db237eec4db4b9ca4ef072b1e
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
   m_UseUCBPForAssetBundles: 0
