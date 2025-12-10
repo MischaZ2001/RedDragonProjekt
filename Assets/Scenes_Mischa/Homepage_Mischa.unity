@@ -3076,7 +3076,6 @@ GameObject:
   - component: {fileID: 1613712892}
   - component: {fileID: 1613712893}
   - component: {fileID: 1613712894}
-  - component: {fileID: 1613712895}
   m_Layer: 0
   m_Name: Manager
   m_TagString: Untagged
@@ -3144,26 +3143,6 @@ MonoBehaviour:
   signInButton: {fileID: 1643985403}
   logoutButton: {fileID: 1612025332}
 --- !u!114 &1613712894
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1613712889}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: dc868323ccbc1634cbe20bdac8756a57, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  images:
-  - {fileID: 899350915}
-  - {fileID: 2019552585}
-  - {fileID: 1939812314}
-  - {fileID: 1791966519}
-  - {fileID: 790385321}
-  bigScale: 1.4
-  smallScale: 0.9
---- !u!114 &1613712895
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
