@@ -1329,7 +1329,7 @@ GameObject:
   - component: {fileID: 576240994}
   - component: {fileID: 576240993}
   m_Layer: 5
-  m_Name: Login
+  m_Name: LoginButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2818,7 +2818,7 @@ GameObject:
   - component: {fileID: 1274687231}
   - component: {fileID: 1274687230}
   m_Layer: 5
-  m_Name: Settings
+  m_Name: SettingsButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3339,7 +3339,7 @@ GameObject:
   - component: {fileID: 1612025335}
   - component: {fileID: 1612025334}
   m_Layer: 5
-  m_Name: Log Out
+  m_Name: Log OutButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3570,7 +3570,7 @@ GameObject:
   - component: {fileID: 1643985406}
   - component: {fileID: 1643985405}
   m_Layer: 5
-  m_Name: SignIn
+  m_Name: SignInButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
