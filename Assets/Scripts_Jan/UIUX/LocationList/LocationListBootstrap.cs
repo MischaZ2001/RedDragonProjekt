@@ -11,7 +11,7 @@ namespace LocationFinder.UIUX
 
         private void Start()
         {
-            ILocationRepository repo = new JsonLocationRepository();
+            ILocationRepository repo = new JsonLocationRepository(); 
             ILocationFilterService filter = new LocationFilterService();
 
             var presenter = new LocationListPresenter(view, repo, filter);
