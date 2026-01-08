@@ -5,17 +5,17 @@ public class sceneLoader : MonoBehaviour
 {
     public void LoadHomepage()
     {
-        SceneManager.LoadScene("Homepage_Mischa");
+        SceneManager.LoadScene("Homepage_Mischa1");
     }
 
     public void LoadLogin()
     {
-        SceneManager.LoadScene("Login_Mischa");
+        SceneManager.LoadScene("Login_Mischa1");
     }
 
     public void LoadSignIn()
     {
-        SceneManager.LoadScene("SignIn_Mischa");
+        SceneManager.LoadScene("SignIn_Mischa1");
     }
 
     public void QuitGame()
