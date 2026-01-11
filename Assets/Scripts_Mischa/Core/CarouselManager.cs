@@ -4,146 +4,112 @@ using UnityEngine.UI;
 
 public class CarouselManager : MonoBehaviour
 {
-    [Header("Items (beliebig viele)")]
-    public RectTransform[] items;          // N UI Images
-    public RectTransform centerPoint;
-    public Text descriptionText;
+    [Header("Items (GENAU 5 UI Images)")]
+    public RectTransform[] items;          
+    public RectTransform centerPoint;      
+    public Text descriptionText;           
 
-    [Header("Slots")]
-    public int visibleCount = 5;           // muss ungerade sein (5,7,9...)
-    public float spacing = 200f;
+    [Header("Layout")]
+    public float spacing = 200f;           
     public float yOffset = 0f;
 
     [Header("Scale")]
-    public float baseScale = 0.9f;
-    public float hoverScale = 1.05f;
-    public float focusedScale = 1.4f;
+    public float baseScale = 0.9f;         
+    public float hoverScale = 1.05f;       
+    public float focusedScale = 1.4f;     
 
-    [Header("Scroll")]
-    public bool enableMouseWheel = true;
-    public float wheelThreshold = 0.05f;
-
-    private int focusedIndex = -1;
+    // interner Zustand
+    private int focusedIndex = -1;         
     private int hoveredIndex = -1;
 
     void Start()
     {
-        if (items == null || items.Length < visibleCount)
+        if (items == null || items.Length != 5)
         {
-            Debug.LogError($"CarouselManager: items[] muss >= visibleCount sein. items={items?.Length}, visibleCount={visibleCount}");
-            return;
-        }
-        if (visibleCount % 2 == 0)
-        {
-            Debug.LogError("CarouselManager: visibleCount muss ungerade sein (z.B. 5).");
+            Debug.LogError("CarouselManager: items[] MUSS genau 5 Elemente haben.");
             return;
         }
 
-        // Links->Rechts sortieren (stabiler Start)
         Array.Sort(items, (a, b) => a.anchoredPosition.x.CompareTo(b.anchoredPosition.x));
 
-        // CarouselItem init + Button (optional)
         for (int i = 0; i < items.Length; i++)
         {
-            var ci = items[i].GetComponent<CarouselItem>();
-            if (!ci) ci = items[i].gameObject.AddComponent<CarouselItem>();
-            ci.index = i;
-            ci.manager = this;
+            int index = i;
 
-            // Optional: Button-Highlight vermeiden (wenn du willst)
+            // Click
             var btn = items[i].GetComponent<Button>();
-            if (!btn) btn = items[i].gameObject.AddComponent<Button>();
-            btn.onClick.RemoveAllListeners();
-            int idx = i;
-            btn.onClick.AddListener(() => SetFocus(idx));
-        }
+            if (btn == null)
+                btn = items[i].gameObject.AddComponent<Button>();
 
-        // Start: kein Fokus -> alle klein, aber wir zeigen initial die ersten 5
-        focusedIndex = 0;            // wichtig fürs “Fenster”
-        SnapWindowToFocus();
-        focusedIndex = -1;           // und dann Fokus deaktivieren
+            btn.onClick.RemoveAllListeners();
+            btn.onClick.AddListener(() => SetFocus(index));
+
+        }
+        SnapInitialPositions();
         ApplyScales();
         ApplyDescription();
     }
 
     void Update()
     {
-        // Hover stabil
         int newHover = GetHoveredIndex();
         if (newHover != hoveredIndex)
         {
             hoveredIndex = newHover;
             ApplyScales();
         }
-
-        // Scrollen
-        if (enableMouseWheel)
-        {
-            float w = Input.mouseScrollDelta.y;
-            if (Mathf.Abs(w) > wheelThreshold)
-            {
-                // Wheel up -> nach links / vorheriges
-                // Wheel down -> nach rechts / nächstes
-                int dir = w > 0 ? -1 : 1;
-
-                if (focusedIndex == -1)
-                {
-                    // wenn noch kein Fokus: nimm das aktuelle Center des Fensters
-                    focusedIndex = Mathf.Clamp(0 + (visibleCount / 2), 0, items.Length - 1);
-                }
-
-                SetFocus(ClampFocus(focusedIndex + dir));
-            }
-        }
     }
 
     public void SetFocus(int index)
     {
-        focusedIndex = ClampFocus(index);
-        SnapWindowToFocus();
+        focusedIndex = Mathf.Clamp(index, 0, 4);
+        SnapToFocus();
         ApplyScales();
         ApplyDescription();
     }
 
-    private int ClampFocus(int index)
-        => Mathf.Clamp(index, 0, items.Length - 1);
-
-    private void SnapWindowToFocus()
+    private void SnapInitialPositions()
     {
         Vector2 c = centerPoint.anchoredPosition;
         c.y += yOffset;
 
-        int half = visibleCount / 2;
-
-        // erst alle ausblenden
-        for (int i = 0; i < items.Length; i++)
-            items[i].gameObject.SetActive(false);
-
-        // dann die 5 sichtbaren platzieren
-        for (int slot = -half; slot <= half; slot++)
+        // feste Slots: -2 -1 0 +1 +2
+        for (int i = 0; i < 5; i++)
         {
-            int idx = focusedIndex + slot;
-            if (idx < 0 || idx >= items.Length) continue; // an den Enden weniger als 5 sichtbar
-
-            items[idx].gameObject.SetActive(true);
-            items[idx].anchoredPosition = new Vector2(c.x + slot * spacing, c.y);
+            int slot = i - 2;
+            items[i].anchoredPosition = new Vector2(c.x + slot * spacing, c.y);
         }
+    }
 
-        if (focusedIndex >= 0 && focusedIndex < items.Length)
-            items[focusedIndex].SetAsLastSibling();
+    private void SnapToFocus()
+    {
+        Vector2 c = centerPoint.anchoredPosition;
+        c.y += yOffset;
+
+        for (int slot = -2; slot <= 2; slot++)
+        {
+            int itemIndex = Mod(focusedIndex + slot, 5);
+            items[itemIndex].anchoredPosition =
+                new Vector2(c.x + slot * spacing, c.y);
+
+            if (itemIndex == focusedIndex)
+                items[itemIndex].SetAsLastSibling();
+        }
     }
 
     private void ApplyScales()
     {
-        for (int i = 0; i < items.Length; i++)
+        for (int i = 0; i < 5; i++)
         {
-            if (!items[i].gameObject.activeSelf) continue;
+            float scale = baseScale;
 
-            float s = baseScale;
-            if (i == focusedIndex) s = focusedScale;
-            else if (i == hoveredIndex && i != focusedIndex) s = Mathf.Max(s, hoverScale);
+            // Fokus hat Priorität
+            if (i == focusedIndex)
+                scale = focusedScale;
+            else if (i == hoveredIndex)
+                scale = hoverScale;
 
-            items[i].localScale = Vector3.one * s;
+            items[i].localScale = Vector3.one * scale;
         }
     }
 
@@ -151,28 +117,31 @@ public class CarouselManager : MonoBehaviour
     {
         if (!descriptionText) return;
 
-        if (focusedIndex < 0 || focusedIndex >= items.Length)
+        if (focusedIndex == -1)
         {
             descriptionText.text = "";
             return;
         }
 
-        var ci = items[focusedIndex].GetComponent<CarouselItem>();
-        descriptionText.text = ci ? ci.description : "";
+        var desc = items[focusedIndex].GetComponent<CarouselItem>();
+        descriptionText.text = desc ? desc.description : "";
     }
 
     private int GetHoveredIndex()
     {
         Vector2 mouse = Input.mousePosition;
 
-        // von oben nach unten prüfen (kein Flackern)
+        // von oben nach unten prüfen → kein Flackern
         for (int i = items.Length - 1; i >= 0; i--)
         {
-            if (!items[i].gameObject.activeSelf) continue;
-
             if (RectTransformUtility.RectangleContainsScreenPoint(items[i], mouse))
                 return i;
         }
         return -1;
+    }
+    private int Mod(int a, int m)
+    {
+        int r = a % m;
+        return r < 0 ? r + m : r;
     }
 }
