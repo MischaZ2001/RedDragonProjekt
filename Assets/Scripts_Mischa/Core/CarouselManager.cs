@@ -4,22 +4,18 @@ using UnityEngine.UI;
 
 public class CarouselManager : MonoBehaviour
 {
-    [Header("Items (GENAU 5 UI Images)")]
-    public RectTransform[] items;          
-    public RectTransform centerPoint;      
-    public Text descriptionText;           
+    public RectTransform[] items;
+    public Text descriptionText;
 
-    [Header("Layout")]
-    public float spacing = 200f;           
-    public float yOffset = 0f;
+    public float spacing = 200f;
+    public float yPosition = 0f;     // feste Y-Position
+    public float centerX = 0f;        // feste Mitte (meist 0)
 
-    [Header("Scale")]
-    public float baseScale = 0.9f;         
-    public float hoverScale = 1.05f;       
-    public float focusedScale = 1.4f;     
+    public float baseScale = 0.9f;
+    public float hoverScale = 1.05f;
+    public float focusedScale = 1.4f;
 
-    // interner Zustand
-    private int focusedIndex = -1;         
+    private int focusedIndex = -1;
     private int hoveredIndex = -1;
 
     void Start()
@@ -30,21 +26,20 @@ public class CarouselManager : MonoBehaviour
             return;
         }
 
+        // links → rechts sortieren (wichtig!)
         Array.Sort(items, (a, b) => a.anchoredPosition.x.CompareTo(b.anchoredPosition.x));
 
         for (int i = 0; i < items.Length; i++)
         {
             int index = i;
 
-            // Click
             var btn = items[i].GetComponent<Button>();
-            if (btn == null)
-                btn = items[i].gameObject.AddComponent<Button>();
+            if (!btn) btn = items[i].gameObject.AddComponent<Button>();
 
             btn.onClick.RemoveAllListeners();
             btn.onClick.AddListener(() => SetFocus(index));
-
         }
+
         SnapInitialPositions();
         ApplyScales();
         ApplyDescription();
@@ -70,27 +65,21 @@ public class CarouselManager : MonoBehaviour
 
     private void SnapInitialPositions()
     {
-        Vector2 c = centerPoint.anchoredPosition;
-        c.y += yOffset;
-
-        // feste Slots: -2 -1 0 +1 +2
         for (int i = 0; i < 5; i++)
         {
             int slot = i - 2;
-            items[i].anchoredPosition = new Vector2(c.x + slot * spacing, c.y);
+            items[i].anchoredPosition =
+                new Vector2(centerX + slot * spacing, yPosition);
         }
     }
 
     private void SnapToFocus()
     {
-        Vector2 c = centerPoint.anchoredPosition;
-        c.y += yOffset;
-
         for (int slot = -2; slot <= 2; slot++)
         {
             int itemIndex = Mod(focusedIndex + slot, 5);
             items[itemIndex].anchoredPosition =
-                new Vector2(c.x + slot * spacing, c.y);
+                new Vector2(centerX + slot * spacing, yPosition);
 
             if (itemIndex == focusedIndex)
                 items[itemIndex].SetAsLastSibling();
@@ -103,7 +92,6 @@ public class CarouselManager : MonoBehaviour
         {
             float scale = baseScale;
 
-            // Fokus hat Priorität
             if (i == focusedIndex)
                 scale = focusedScale;
             else if (i == hoveredIndex)
@@ -131,14 +119,14 @@ public class CarouselManager : MonoBehaviour
     {
         Vector2 mouse = Input.mousePosition;
 
-        // von oben nach unten prüfen → kein Flackern
         for (int i = items.Length - 1; i >= 0; i--)
         {
-            if (RectTransformUtility.RectangleContainsScreenPoint(items[i], mouse))
+            if (RectTransformUtility.RectangleContainsScreenPoint(items[i], mouse, null))
                 return i;
         }
         return -1;
     }
+
     private int Mod(int a, int m)
     {
         int r = a % m;

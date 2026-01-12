@@ -769,8 +769,6 @@ MonoBehaviour:
   usernameInput: {fileID: 1277984987}
   passwordInput: {fileID: 1147063205}
   messageText: {fileID: 826095676}
-  loginUrl: https://deinserver.de/api/login
-  registerUrl: https://deinserver.de/api/register
 --- !u!4 &992763785
 Transform:
   m_ObjectHideFlags: 0
