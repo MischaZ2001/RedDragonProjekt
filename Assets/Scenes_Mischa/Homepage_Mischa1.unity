@@ -1993,7 +1993,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 1}
   m_AnchorMax: {x: 0.5, y: 1}
-  m_AnchoredPosition: {x: 50.00157, y: -59.98805}
+  m_AnchoredPosition: {x: 50.00157, y: -59.988037}
   m_SizeDelta: {x: 200, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &413828645
@@ -2212,7 +2212,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 1}
   m_AnchorMax: {x: 0.5, y: 1}
-  m_AnchoredPosition: {x: 0, y: -19.986834}
+  m_AnchoredPosition: {x: 0, y: -19.986847}
   m_SizeDelta: {x: 160, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &486891612
@@ -2915,6 +2915,37 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 640595090}
   m_CullTransparentMesh: 1
+--- !u!1 &655200511
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 655200512}
+  m_Layer: 0
+  m_Name: HAUAUAUAhua
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &655200512
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 655200511}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 51.10675, y: 1.0295027, z: -103.58366}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &684361735
 GameObject:
   m_ObjectHideFlags: 0
@@ -5728,7 +5759,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d86dcc035c1b290468cd082560216236, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  usernameText: {fileID: 0}
+  profileCircle: {fileID: 0}
+  profileLetterText: {fileID: 0}
   loginButton: {fileID: 576240991}
   signInButton: {fileID: 1643985403}
   logoutButton: {fileID: 1612025332}
@@ -5744,14 +5776,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dc868323ccbc1634cbe20bdac8756a57, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  images:
-  - {fileID: 899350915}
-  - {fileID: 2019552585}
-  - {fileID: 1939812314}
-  - {fileID: 1791966519}
-  - {fileID: 790385321}
-  bigScale: 1.4
-  smallScale: 0.9
+  items: []
+  centerPoint: {fileID: 0}
+  descriptionText: {fileID: 0}
+  spacing: 200
+  yOffset: 0
+  baseScale: 0.9
+  hoverScale: 1.05
+  focusedScale: 1.4
 --- !u!1 &1643985403
 GameObject:
   m_ObjectHideFlags: 0
@@ -6257,7 +6289,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 9, y: 2.4999993}
+  m_AnchoredPosition: {x: 9, y: 2.499999}
   m_SizeDelta: {x: -28, y: 3.0000014}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1863197989
@@ -7469,3 +7501,4 @@ SceneRoots:
   - {fileID: 1369339769}
   - {fileID: 444657561}
   - {fileID: 1613712891}
+  - {fileID: 655200512}
