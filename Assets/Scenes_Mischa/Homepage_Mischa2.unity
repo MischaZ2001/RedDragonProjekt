@@ -5751,7 +5751,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d86dcc035c1b290468cd082560216236, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  usernameText: {fileID: 0}
+  profileCircle: {fileID: 1439057436}
+  profileLetterText: {fileID: 805686959}
   loginButton: {fileID: 576240991}
   signInButton: {fileID: 1643985403}
   logoutButton: {fileID: 1612025332}
@@ -5767,14 +5768,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dc868323ccbc1634cbe20bdac8756a57, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  images:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  bigScale: 1.4
-  smallScale: 0.9
+  items: []
+  centerPoint: {fileID: 0}
+  descriptionText: {fileID: 0}
+  spacing: 200
+  yOffset: 0
+  baseScale: 0.9
+  hoverScale: 1.05
+  focusedScale: 1.4
 --- !u!1 &1643985403
 GameObject:
   m_ObjectHideFlags: 0
