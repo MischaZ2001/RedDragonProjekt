@@ -8,8 +8,8 @@ public class CarouselManager : MonoBehaviour
     public Text descriptionText;
 
     public float spacing = 200f;
-    public float yPosition = 0f;     // feste Y-Position
-    public float centerX = 0f;        // feste Mitte (meist 0)
+    public float yPosition = 0f;     
+    public float centerX = 0f;        
 
     public float baseScale = 0.9f;
     public float hoverScale = 1.05f;
@@ -26,7 +26,6 @@ public class CarouselManager : MonoBehaviour
             return;
         }
 
-        // links → rechts sortieren (wichtig!)
         Array.Sort(items, (a, b) => a.anchoredPosition.x.CompareTo(b.anchoredPosition.x));
 
         for (int i = 0; i < items.Length; i++)
