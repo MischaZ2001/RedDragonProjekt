@@ -11,12 +11,5 @@ public class FavouritesData
 public class FavouritesFolderData
 {
     public string folderName;
-    public List<FavouriteImageRef> images = new();
-}
-
-[Serializable]
-public class FavouriteImageRef
-{
-    public string relativePath;   // z.B. "FavouritesImages/icon_123.png"
-    public string displayName;    // optional für UI (Dateiname ohne Endung etc.)
+    public List<string> itemKeys = new(); // z.B. "SwordItem", "ShieldItem" (Prefab-Name)
 }
