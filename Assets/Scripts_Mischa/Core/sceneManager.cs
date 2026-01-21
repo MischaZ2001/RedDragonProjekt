@@ -5,7 +5,7 @@ public class sceneLoader : MonoBehaviour
 {
     public void LoadHomepage()
     {
-        SceneManager.LoadScene("Homepage_Mischa2");
+        SceneManager.LoadScene("Homepage-Mischa2");
     }
 
     public void LoadLogin()

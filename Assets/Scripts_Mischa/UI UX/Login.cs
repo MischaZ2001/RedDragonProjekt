@@ -68,7 +68,7 @@ public class Login : MonoBehaviour
             SessionData.CurrentUserName = username;
             Debug.Log("[LOGIN] SessionData.CurrentUserName = " + SessionData.CurrentUserName);
 
-            SceneManager.LoadScene("Homepage_Mischa2");
+            SceneManager.LoadScene("Homepage-Mischa2");
         }
     }
 

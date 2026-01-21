@@ -9,23 +9,43 @@ public class CarouselManager : MonoBehaviour
 
     public float spacing = 200f;
     public float yPosition = 0f;     
-    public float centerX = 0f;        
+    public float centerX = 0f;
+    public float wheelCooldown = 0.12f;
+
+    public bool enableMouseWheel = true;  
 
     public float baseScale = 0.9f;
     public float hoverScale = 1.05f;
     public float focusedScale = 1.4f;
 
+    public int visibleSlots = 5; 
+
+
     private int focusedIndex = -1;
     private int hoveredIndex = -1;
 
+    private float wheelTimer = 0f;
+
     void Start()
     {
-        if (items == null || items.Length != 5)
+        if (items == null || items.Length < 1)
         {
-            Debug.LogError("CarouselManager: items[] MUSS genau 5 Elemente haben.");
+            Debug.LogError("CarouselManager: items[] ist leer.");
             return;
         }
 
+        if (visibleSlots < 1 || visibleSlots % 2 == 0)
+        {
+            Debug.LogError("CarouselManager: visibleSlots muss ungerade und >= 1 sein (z.B. 5).");
+            return;
+        }
+
+        if (items.Length < visibleSlots)
+        {
+            Debug.LogError($"CarouselManager: items.Length ({items.Length}) muss >= visibleSlots ({visibleSlots}) sein.");
+            return;
+        }
+ 
         Array.Sort(items, (a, b) => a.anchoredPosition.x.CompareTo(b.anchoredPosition.x));
 
         for (int i = 0; i < items.Length; i++)
@@ -52,11 +72,14 @@ public class CarouselManager : MonoBehaviour
             hoveredIndex = newHover;
             ApplyScales();
         }
+
+        HandleMouseWheel();
     }
+
 
     public void SetFocus(int index)
     {
-        focusedIndex = Mathf.Clamp(index, 0, 4);
+        focusedIndex = Mathf.Clamp(index, 0, items.Length - 1);
         SnapToFocus();
         ApplyScales();
         ApplyDescription();
@@ -64,31 +87,43 @@ public class CarouselManager : MonoBehaviour
 
     private void SnapInitialPositions()
     {
-        for (int i = 0; i < 5; i++)
-        {
-            int slot = i - 2;
-            items[i].anchoredPosition =
-                new Vector2(centerX + slot * spacing, yPosition);
-        }
+        if (focusedIndex < 0) focusedIndex = 0;
+
+        SnapToFocus();
     }
+
 
     private void SnapToFocus()
     {
-        for (int slot = -2; slot <= 2; slot++)
+        int n = items.Length;
+        int half = visibleSlots / 2;
+
+        // Erst alle ausblenden (nicht sichtbar)
+        for (int i = 0; i < n; i++)
+            items[i].gameObject.SetActive(false);
+
+        // Dann nur die sichtbaren Slots aktivieren und korrekt positionieren
+        for (int slot = -half; slot <= half; slot++)
         {
-            int itemIndex = Mod(focusedIndex + slot, 5);
+            int itemIndex = Mod(focusedIndex + slot, n);
+
+            items[itemIndex].gameObject.SetActive(true);
             items[itemIndex].anchoredPosition =
                 new Vector2(centerX + slot * spacing, yPosition);
 
+            // Fokus nach vorne (Rendering)
             if (itemIndex == focusedIndex)
                 items[itemIndex].SetAsLastSibling();
         }
     }
 
+
     private void ApplyScales()
     {
-        for (int i = 0; i < 5; i++)
+        for (int i = 0; i < items.Length; i++)
         {
+            if (!items[i].gameObject.activeSelf) continue;
+
             float scale = baseScale;
 
             if (i == focusedIndex)
@@ -99,6 +134,7 @@ public class CarouselManager : MonoBehaviour
             items[i].localScale = Vector3.one * scale;
         }
     }
+
 
     private void ApplyDescription()
     {
@@ -124,6 +160,28 @@ public class CarouselManager : MonoBehaviour
                 return i;
         }
         return -1;
+    }
+
+
+    private void HandleMouseWheel()
+    {
+        if (!enableMouseWheel) return;
+
+        wheelTimer -= Time.unscaledDeltaTime;
+        if (wheelTimer > 0f) return;
+
+        float scroll = Input.mouseScrollDelta.y;
+        if (Mathf.Abs(scroll) < 0.01f) return;
+
+        if (focusedIndex < 0) focusedIndex = 2;
+
+        int dir = scroll > 0 ? -1 : 1;
+
+        int next = Mod(focusedIndex + dir, items.Length);
+
+        SetFocus(next);
+
+        wheelTimer = wheelCooldown;
     }
 
     private int Mod(int a, int m)
