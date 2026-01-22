@@ -2534,7 +2534,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1613712890}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: Login, Assembly-CSharp
         m_MethodName: OnLoginClicked
         m_Mode: 1
@@ -2546,7 +2546,7 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 1613712892}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: SceneLoader, Assembly-CSharp
         m_MethodName: LoadLogin
         m_Mode: 1
@@ -5956,7 +5956,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1613712893}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: HomepageUI, Assembly-CSharp
         m_MethodName: OnLogoutClicked
         m_Mode: 1
@@ -6022,105 +6022,6 @@ MonoBehaviour:
   clickSound: {fileID: 8300000, guid: e79f1a6824818b64db37d00d061f0c01, type: 3}
   hoverVolume: 0.6
   clickVolume: 1
---- !u!1 &1613712889
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1613712891}
-  - component: {fileID: 1613712890}
-  - component: {fileID: 1613712892}
-  - component: {fileID: 1613712893}
-  - component: {fileID: 1613712894}
-  m_Layer: 0
-  m_Name: Manager
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &1613712890
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1613712889}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6fde1f09ca203034f8681316e1e67484, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  usernameInput: {fileID: 906792033}
-  passwordInput: {fileID: 688889055}
-  messageText: {fileID: 0}
---- !u!4 &1613712891
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1613712889}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.5904107, y: -2.7605116, z: 88.303825}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1613712892
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1613712889}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ab134629de2e4794a889b91d9c4a61cd, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!114 &1613712893
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1613712889}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d86dcc035c1b290468cd082560216236, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  profileCircle: {fileID: 0}
-  profileLetterText: {fileID: 0}
-  loginButton: {fileID: 576240991}
-  signInButton: {fileID: 1643985403}
-  logoutButton: {fileID: 1612025332}
---- !u!114 &1613712894
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1613712889}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: dc868323ccbc1634cbe20bdac8756a57, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  items: []
-  centerPoint: {fileID: 0}
-  descriptionText: {fileID: 0}
-  spacing: 200
-  yOffset: 0
-  baseScale: 0.9
-  hoverScale: 1.05
-  focusedScale: 1.4
 --- !u!1 &1643985403
 GameObject:
   m_ObjectHideFlags: 0
@@ -6205,7 +6106,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1613712890}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: Login, Assembly-CSharp
         m_MethodName: OnRegisterClicked
         m_Mode: 1
@@ -6217,7 +6118,7 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 1613712892}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: SceneLoader, Assembly-CSharp
         m_MethodName: LoadSignIn
         m_Mode: 1
@@ -7620,4 +7521,3 @@ SceneRoots:
   - {fileID: 832575519}
   - {fileID: 1369339769}
   - {fileID: 444657561}
-  - {fileID: 1613712891}
