@@ -53,6 +53,6 @@ public class HomepageUI : MonoBehaviour
         signInButton.SetActive(true);
         logoutButton.SetActive(false);
 
-        SceneManager.LoadScene("Homepage_Mischa2");
+        SceneManager.LoadScene("Homepage-Mischa2");
     }
 }

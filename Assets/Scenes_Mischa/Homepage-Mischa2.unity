@@ -6412,13 +6412,14 @@ MonoBehaviour:
   spacing: 300
   yPosition: 0
   centerX: 0
-  wheelCooldown: 0.12
   enableMouseWheel: 1
+  wheelCooldown: 0.12
   baseScale: 0.9
   hoverScale: 1.05
   focusedScale: 1.2
   visibleSlots: 5
   startCenterIndex: 0
+  clearButtonTag: 
 --- !u!1 &1643985403
 GameObject:
   m_ObjectHideFlags: 0
