@@ -1,0 +1,11 @@
+{
+  "items": [
+    {
+      "id": "loc_01",
+      "name": "Test Location",
+      "category": "Test",
+      "city": "Test City",
+      "tags": []
+    }
+  ]
+}

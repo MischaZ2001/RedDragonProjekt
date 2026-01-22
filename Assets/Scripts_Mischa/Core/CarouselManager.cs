@@ -8,21 +8,22 @@ public class CarouselManager : MonoBehaviour
     public Text descriptionText;
 
     public float spacing = 200f;
-    public float yPosition = 0f;     
+    public float yPosition = 0f;
     public float centerX = 0f;
     public float wheelCooldown = 0.12f;
 
-    public bool enableMouseWheel = true;  
+    public bool enableMouseWheel = true;
 
     public float baseScale = 0.9f;
     public float hoverScale = 1.05f;
     public float focusedScale = 1.4f;
 
-    public int visibleSlots = 5; 
-
+    public int visibleSlots = 5;
 
     private int focusedIndex = -1;
     private int hoveredIndex = -1;
+
+    [SerializeField] private int startCenterIndex = 0;
 
     private float wheelTimer = 0f;
 
@@ -45,23 +46,23 @@ public class CarouselManager : MonoBehaviour
             Debug.LogError($"CarouselManager: items.Length ({items.Length}) muss >= visibleSlots ({visibleSlots}) sein.");
             return;
         }
- 
+
         Array.Sort(items, (a, b) => a.anchoredPosition.x.CompareTo(b.anchoredPosition.x));
 
         for (int i = 0; i < items.Length; i++)
         {
             int index = i;
 
-            var btn = items[i].GetComponent<Button>();
-            if (!btn) btn = items[i].gameObject.AddComponent<Button>();
-
-            btn.onClick.RemoveAllListeners();
-            btn.onClick.AddListener(() => SetFocus(index));
+            var proxy = items[i].GetComponent<CarouselClickProxy>();
+            if (!proxy) proxy = items[i].gameObject.AddComponent<CarouselClickProxy>();
+            proxy.Init(this, index);
         }
 
-        SnapInitialPositions();
+        startCenterIndex = Mathf.Clamp(startCenterIndex, 0, items.Length - 1);
+
+        SnapToCenter(startCenterIndex);
         ApplyScales();
-        ApplyDescription();
+        ApplyDescription(); 
     }
 
     void Update()
@@ -76,7 +77,6 @@ public class CarouselManager : MonoBehaviour
         HandleMouseWheel();
     }
 
-
     public void SetFocus(int index)
     {
         focusedIndex = Mathf.Clamp(index, 0, items.Length - 1);
@@ -85,38 +85,30 @@ public class CarouselManager : MonoBehaviour
         ApplyDescription();
     }
 
-    private void SnapInitialPositions()
+    private void SnapToFocus()
     {
-        if (focusedIndex < 0) focusedIndex = 0;
-
-        SnapToFocus();
+        SnapToCenter(focusedIndex);
     }
 
-
-    private void SnapToFocus()
+    private void SnapToCenter(int centerIndex)
     {
         int n = items.Length;
         int half = visibleSlots / 2;
 
-        // Erst alle ausblenden (nicht sichtbar)
         for (int i = 0; i < n; i++)
             items[i].gameObject.SetActive(false);
 
-        // Dann nur die sichtbaren Slots aktivieren und korrekt positionieren
         for (int slot = -half; slot <= half; slot++)
         {
-            int itemIndex = Mod(focusedIndex + slot, n);
+            int itemIndex = Mod(centerIndex + slot, n);
 
             items[itemIndex].gameObject.SetActive(true);
-            items[itemIndex].anchoredPosition =
-                new Vector2(centerX + slot * spacing, yPosition);
+            items[itemIndex].anchoredPosition = new Vector2(centerX + slot * spacing, yPosition);
 
-            // Fokus nach vorne (Rendering)
-            if (itemIndex == focusedIndex)
+            if (focusedIndex >= 0 && itemIndex == focusedIndex)
                 items[itemIndex].SetAsLastSibling();
         }
     }
-
 
     private void ApplyScales()
     {
@@ -126,7 +118,7 @@ public class CarouselManager : MonoBehaviour
 
             float scale = baseScale;
 
-            if (i == focusedIndex)
+            if (focusedIndex >= 0 && i == focusedIndex)
                 scale = focusedScale;
             else if (i == hoveredIndex)
                 scale = hoverScale;
@@ -135,12 +127,11 @@ public class CarouselManager : MonoBehaviour
         }
     }
 
-
     private void ApplyDescription()
     {
         if (!descriptionText) return;
 
-        if (focusedIndex == -1)
+        if (focusedIndex < 0)
         {
             descriptionText.text = "";
             return;
@@ -156,12 +147,13 @@ public class CarouselManager : MonoBehaviour
 
         for (int i = items.Length - 1; i >= 0; i--)
         {
+            if (!items[i].gameObject.activeSelf) continue;
+
             if (RectTransformUtility.RectangleContainsScreenPoint(items[i], mouse, null))
                 return i;
         }
         return -1;
     }
-
 
     private void HandleMouseWheel()
     {
@@ -173,12 +165,12 @@ public class CarouselManager : MonoBehaviour
         float scroll = Input.mouseScrollDelta.y;
         if (Mathf.Abs(scroll) < 0.01f) return;
 
-        if (focusedIndex < 0) focusedIndex = 2;
-
         int dir = scroll > 0 ? -1 : 1;
 
-        int next = Mod(focusedIndex + dir, items.Length);
+        if (focusedIndex < 0)
+            focusedIndex = startCenterIndex;
 
+        int next = Mod(focusedIndex + dir, items.Length);
         SetFocus(next);
 
         wheelTimer = wheelCooldown;

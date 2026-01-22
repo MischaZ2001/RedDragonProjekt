@@ -4,12 +4,9 @@ using LocationFinder.Core.Domain;
 
 namespace LocationFinder.System
 {
-    /// <summary>
-    /// Simple JSON repository that loads locations from Resources/locations.json
-    /// </summary>
     public class JsonLocationRepository : ILocationRepository
     {
-        private const string ResourcesFileName = "locations"; 
+        private const string ResourcesFileName = "locations";
         private List<Location> _cache;
 
         public IReadOnlyList<Location> GetAll()
@@ -30,13 +27,48 @@ namespace LocationFinder.System
                 return;
             }
 
+            string raw = jsonAsset.text ?? "";
+            Debug.Log($"[JsonLocationRepository] RAW (first 300 chars): {raw.Substring(0, Mathf.Min(300, raw.Length))}");
+
             try
             {
-                var wrapper = JsonUtility.FromJson<LocationsWrapper>(jsonAsset.text);
-                _cache = wrapper?.items ?? new List<Location>();
-            }
-            catch(global::System.Exception e) 
+                LocationsWrapper wrapper = null;
 
+                wrapper = JsonUtility.FromJson<LocationsWrapper>(raw);
+
+                if (wrapper == null || wrapper.items == null)
+                {
+                    string trimmed = raw.TrimStart();
+                    if (trimmed.StartsWith("["))
+                    {
+                        string wrapped = "{ \"items\": " + raw + " }";
+                        wrapper = JsonUtility.FromJson<LocationsWrapper>(wrapped);
+                    }
+                }
+
+                var dtos = wrapper?.items ?? new List<LocationDto>();
+
+                _cache = new List<Location>(dtos.Count);
+                for (int i = 0; i < dtos.Count; i++)
+                {
+                    var d = dtos[i];
+                    if (d == null) continue;
+
+                    _cache.Add(new Location(
+                        d.id,
+                        d.name,
+                        d.category,
+                        d.city,
+                        d.tags
+                    ));
+                }
+
+                Debug.Log($"[JsonLocationRepository] Loaded locations: {_cache.Count}");
+
+                if (_cache.Count > 0)
+                    Debug.Log($"[JsonLocationRepository] First: {_cache[0].Name} ({_cache[0].Id})");
+            }
+            catch (global::System.Exception e)
             {
                 Debug.LogError($"[JsonLocationRepository] Failed to parse JSON: {e.Message}");
                 _cache = new List<Location>();
@@ -46,9 +78,17 @@ namespace LocationFinder.System
         [global::System.Serializable]
         private class LocationsWrapper
         {
-            public List<Location> items;
+            public List<LocationDto> items;
+        }
+
+        [global::System.Serializable]
+        private class LocationDto
+        {
+            public string id;
+            public string name;
+            public string category;
+            public string city;
+            public string[] tags;
         }
     }
 }
-
-

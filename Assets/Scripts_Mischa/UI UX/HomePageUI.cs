@@ -12,7 +12,6 @@ public class HomepageUI : MonoBehaviour
     public GameObject signInButton;
     public GameObject logoutButton;
 
-    /// <summary>Initializes the homepage UI based on login status.</summary>
     void Start()
     {
         Debug.Log("[HOMEPAGE] Start -> SessionData.CurrentUserName = " + SessionData.CurrentUserName);
@@ -41,7 +40,6 @@ public class HomepageUI : MonoBehaviour
         }
     }
 
-    /// <summary>Logs the user out and resets the homepage UI.</summary>
     public void OnLogoutClicked()
     {
         Debug.Log("[HOMEPAGE] Logout geklickt");
