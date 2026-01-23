@@ -1,8 +1,8 @@
 using LocationFinder.Core.Domain;
+using LocationFinder.System;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-using LocationFinder.System;
 
 namespace LocationFinder.UIUX.LocationList
 {
@@ -13,54 +13,48 @@ namespace LocationFinder.UIUX.LocationList
         [SerializeField] private TMP_Text cityText;
         [SerializeField] private TMP_Text categoryText;
 
-        [Header("Favourite")]
-        [SerializeField] private Button starButton;
-        [SerializeField] private Image starIcon;
-        [SerializeField] private Sprite starOn;
-        [SerializeField] private Sprite starOff;
+        [Header("Favourite (Toggle)")]
+        [SerializeField] private Toggle favouriteToggle;
 
         private Location _location;
+        private bool _suppressCallback;
+
+        private void Reset()
+        {
+            if (!favouriteToggle) favouriteToggle = GetComponentInChildren<Toggle>(true);
+        }
 
         public void Setup(Location location)
         {
             _location = location;
+            if (_location == null) return;
 
-            nameText.text = location.Name;
-            cityText.text = location.City;
-            categoryText.text = location.Category;
+            if (nameText) nameText.text = _location.Name;
+            if (cityText) cityText.text = _location.City;
+            if (categoryText) categoryText.text = _location.Category;
 
-            RefreshStar();
-
-            if (starButton != null)
+            if (!favouriteToggle)
             {
-                starButton.onClick.RemoveAllListeners();
-                starButton.onClick.AddListener(ToggleFavourite);
+                Debug.LogError("[LocationListItemView] favouriteToggle missing on prefab.");
+                return;
             }
+
+            favouriteToggle.onValueChanged.RemoveAllListeners();
+
+            // Initialen Zustand setzen OHNE Event auszulösen
+            _suppressCallback = true;
+            favouriteToggle.isOn = FavouritesRuntime.Favs.IsFavourite(_location);
+            _suppressCallback = false;
+
+            favouriteToggle.onValueChanged.AddListener(OnFavouriteChanged);
         }
 
-        private void ToggleFavourite()
+        private void OnFavouriteChanged(bool isOn)
         {
-            if (_location == null) return;
+            if (_suppressCallback || _location == null) return;
 
-            bool fav = FavouritesRuntime.Favs.ToggleFavourite(_location);
-            ApplyStar(fav);
-            Debug.Log("Toggled favourite for: " + _location.Id);
-
-        }
-
-        private void RefreshStar()
-        {
-            if (_location == null) return;
-
-            bool fav = FavouritesRuntime.Favs.IsFavourite(_location);
-            ApplyStar(fav);
-        }
-
-        private void ApplyStar(bool fav)
-        {
-            if (starIcon != null && starOn != null && starOff != null)
-                starIcon.sprite = fav ? starOn : starOff;
+            FavouritesRuntime.Favs.SetFavourite(_location, isOn);
+            Debug.Log($"Favourite set: {_location.Name} ({_location.Id}) => {isOn}");
         }
     }
 }
-
