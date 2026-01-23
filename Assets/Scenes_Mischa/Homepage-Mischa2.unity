@@ -4103,6 +4103,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 640595091}
     m_Modifications:
+    - target: {fileID: 4788810869426399990, guid: 03935328d2c20b04e9725de3fc220a01, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 6264266175195333393, guid: 03935328d2c20b04e9725de3fc220a01, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
@@ -7208,26 +7212,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 640595091}
     m_Modifications:
-    - target: {fileID: 4014519435572481238, guid: 03935328d2c20b04e9725de3fc220a01, type: 3}
-      propertyPath: starOn
-      value: 
-      objectReference: {fileID: 10907, guid: 0000000000000000f000000000000000, type: 0}
-    - target: {fileID: 4014519435572481238, guid: 03935328d2c20b04e9725de3fc220a01, type: 3}
-      propertyPath: starOff
-      value: 
-      objectReference: {fileID: 10907, guid: 0000000000000000f000000000000000, type: 0}
-    - target: {fileID: 4014519435572481238, guid: 03935328d2c20b04e9725de3fc220a01, type: 3}
-      propertyPath: starIcon
-      value: 
-      objectReference: {fileID: 2054744455}
-    - target: {fileID: 4014519435572481238, guid: 03935328d2c20b04e9725de3fc220a01, type: 3}
-      propertyPath: locationId
-      value: loc_berlin_01
-      objectReference: {fileID: 0}
-    - target: {fileID: 4014519435572481238, guid: 03935328d2c20b04e9725de3fc220a01, type: 3}
-      propertyPath: starButton
-      value: 
-      objectReference: {fileID: 0}
     - target: {fileID: 6264266175195333393, guid: 03935328d2c20b04e9725de3fc220a01, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
@@ -7312,9 +7296,7 @@ PrefabInstance:
       propertyPath: m_Name
       value: PanelBluprintDark1
       objectReference: {fileID: 0}
-    m_RemovedComponents:
-    - {fileID: 5668547754313691014, guid: 03935328d2c20b04e9725de3fc220a01, type: 3}
-    - {fileID: 4014519435572481238, guid: 03935328d2c20b04e9725de3fc220a01, type: 3}
+    m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
@@ -7967,17 +7949,6 @@ MonoBehaviour:
   clickSound: {fileID: 8300000, guid: e79f1a6824818b64db37d00d061f0c01, type: 3}
   hoverVolume: 0.6
   clickVolume: 1
---- !u!114 &2054744455 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 2494458549177092781, guid: 03935328d2c20b04e9725de3fc220a01, type: 3}
-  m_PrefabInstance: {fileID: 1950972318}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &2080811533
 GameObject:
   m_ObjectHideFlags: 0
