@@ -1,21 +1,23 @@
-using LocationFinder.UIUX.LocationList;
-using LocationFinder.Core.Domain;
-using LocationFinder.System;
 using UnityEngine;
+using LocationFinder.UIUX.Favourites;
 
 namespace LocationFinder.UIUX
 {
-    public class LocationListBootstrap : MonoBehaviour
+    public class FavouritesBootstrap : MonoBehaviour
     {
-        [SerializeField] private UnityLocationListView view;
-
-        private void Start()
+        private void Awake()
         {
-            ILocationRepository repo = new JsonLocationRepository(); 
-            ILocationFilterService filter = new LocationFilterService();
+            var manager = Object.FindAnyObjectByType<FavouritesScrollManager>();
+            var sources = Object.FindObjectsByType<FavouriteToggleSource>(FindObjectsSortMode.None);
 
-            var presenter = new LocationListPresenter(view, repo, filter);
-            presenter.Initialize();
+            if (!manager)
+            {
+                Debug.LogError("[FavouritesBootstrap] Kein FavouritesScrollManager in der Scene gefunden.");
+                return;
+            }
+
+            foreach (var s in sources)
+                s.SetManager(manager);
         }
     }
 }

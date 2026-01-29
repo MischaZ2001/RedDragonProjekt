@@ -1,5 +1,4 @@
-using LocationFinder.Core.Domain;
-using LocationFinder.System;
+using LocationFinder.UIUX.Favourites;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -16,45 +15,61 @@ namespace LocationFinder.UIUX.LocationList
         [Header("Favourite (Toggle)")]
         [SerializeField] private Toggle favouriteToggle;
 
-        private Location _location;
-        private bool _suppressCallback;
+        [Header("Favourites Target (1x in Scene)")]
+        [SerializeField] private FavouritesScrollManager favouritesManager;
+
+        [SerializeField] private string manualId;
+
+
+        private bool _suppress;
 
         private void Reset()
         {
             if (!favouriteToggle) favouriteToggle = GetComponentInChildren<Toggle>(true);
         }
 
-        public void Setup(Location location)
+        private void Awake()
         {
-            _location = location;
-            if (_location == null) return;
-
-            if (nameText) nameText.text = _location.Name;
-            if (cityText) cityText.text = _location.City;
-            if (categoryText) categoryText.text = _location.Category;
+            if (string.IsNullOrWhiteSpace(manualId))
+                manualId = gameObject.name;
 
             if (!favouriteToggle)
             {
-                Debug.LogError("[LocationListItemView] favouriteToggle missing on prefab.");
+                Debug.LogError($"[LocationListItemView] favouriteToggle fehlt: {gameObject.name}");
                 return;
             }
-
-            favouriteToggle.onValueChanged.RemoveAllListeners();
-
-            // Initialen Zustand setzen OHNE Event auszulösen
-            _suppressCallback = true;
-            favouriteToggle.isOn = FavouritesRuntime.Favs.IsFavourite(_location);
-            _suppressCallback = false;
 
             favouriteToggle.onValueChanged.AddListener(OnFavouriteChanged);
         }
 
+
         private void OnFavouriteChanged(bool isOn)
         {
-            if (_suppressCallback || _location == null) return;
+            if (_suppress) return;
 
-            FavouritesRuntime.Favs.SetFavourite(_location, isOn);
-            Debug.Log($"Favourite set: {_location.Name} ({_location.Id}) => {isOn}");
+            if (!favouritesManager)
+            {
+                Debug.LogError($"[LocationListItemView] favouritesManager NICHT gesetzt: {gameObject.name}");
+                return;
+            }
+
+            if (string.IsNullOrWhiteSpace(manualId))
+            {
+                Debug.LogError($"[LocationListItemView] manualId ist leer: {gameObject.name}");
+                return;
+            }
+
+            var data = new FavouriteData(
+                manualId,
+                nameText ? nameText.text : "",
+                cityText ? cityText.text : "",
+                categoryText ? categoryText.text : ""
+            );
+
+            Debug.Log($"[LocationListItemView] Fav toggle => {manualId} isOn={isOn}");
+
+            if (isOn) favouritesManager.AddFavourite(data);
+            else favouritesManager.RemoveFavourite(manualId);
         }
     }
 }
