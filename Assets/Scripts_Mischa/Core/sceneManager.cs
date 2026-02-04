@@ -8,9 +8,10 @@ public class sceneLoader : MonoBehaviour
         SceneManager.LoadScene("Homepage-Mischa2");
     }
 
+    // TEMP: bis wir Login/SignIn als Panels haben
     public void LoadLogin()
     {
-        SceneManager.LoadScene("Login_Mischa1");
+        SceneManager.LoadScene("SignIn_Mischa1");
     }
 
     public void LoadSignIn()
@@ -21,6 +22,8 @@ public class sceneLoader : MonoBehaviour
     public void QuitGame()
     {
         Application.Quit();
-        Debug.Log("Spiel beendet.");
+#if UNITY_EDITOR
+        Debug.Log("Spiel beendet (Editor).");
+#endif
     }
 }

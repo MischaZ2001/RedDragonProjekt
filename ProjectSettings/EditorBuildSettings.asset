@@ -7,14 +7,14 @@ EditorBuildSettings:
   m_Scenes:
   - enabled: 1
     path: Assets/Scenes_Mischa/Homepage-Mischa2.unity
-    guid: 99c9720ab356a0642a771bea13969a05
-  - enabled: 1
+    guid: fb6903af07b17ba48a87c10112b6d7f9
+  - enabled: 0
     path: Assets/Scenes_Mischa/LocationPage_Mischa1.unity
     guid: a483c26da8552b94e977ce78c78e8163
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes_Mischa/Locations_Mischa1.unity
     guid: 21ea9f185c5e4e640b9bc32d872ddf55
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes_Mischa/Login_Mischa1.unity
     guid: 3ea6550f985f9734a92b424bb5c2e4ae
   - enabled: 1
