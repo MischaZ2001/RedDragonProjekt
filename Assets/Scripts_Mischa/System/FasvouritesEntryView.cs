@@ -33,4 +33,3 @@ namespace LocationFinder.UIUX.Favourites
         }
     }
 }
-
