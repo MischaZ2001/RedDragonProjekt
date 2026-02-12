@@ -9,7 +9,6 @@ namespace LocationFinder.UIUX.Favourites
 
         public static void Save(HashSet<string> ids)
         {
-            // simple join, robust genug für kleine Listen
             string raw = string.Join("|", ids);
             PlayerPrefs.SetString(Key, raw);
             PlayerPrefs.Save();

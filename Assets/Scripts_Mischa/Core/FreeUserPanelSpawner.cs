@@ -9,7 +9,7 @@ public class FreeUserPanelSpawner : MonoBehaviour
     [SerializeField] private RectTransform panelPrefab;
 
     [Header("Optional Parent")]
-    [SerializeField] private RectTransform parentOverride; // z.B. ein PanelRoot im Canvas
+    [SerializeField] private RectTransform parentOverride; 
 
     private RectTransform spawned;
 
@@ -21,12 +21,11 @@ public class FreeUserPanelSpawner : MonoBehaviour
             return;
         }
 
-        // Nur in diesem Canvas instanzieren
         RectTransform parent = parentOverride ? parentOverride : freeUserCanvas.transform as RectTransform;
 
         spawned = Instantiate(panelPrefab, parent);
         spawned.gameObject.name = panelPrefab.name + "_FreeUser";
-        spawned.anchoredPosition = Vector2.zero; // oder wie du willst
+        spawned.anchoredPosition = Vector2.zero; 
         spawned.localScale = Vector3.one;
     }
 }

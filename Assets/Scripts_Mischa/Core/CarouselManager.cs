@@ -34,8 +34,8 @@ public class CarouselManager : MonoBehaviour
     public float focusedScale = 1.4f;
 
     [Header("Depth Scaling (outer items smaller)")]
-    [Range(0.1f, 2f)] public float midScale = 0.9f; // neighbors
-    [Range(0.1f, 2f)] public float farScale = 0.7f; // outer
+    [Range(0.1f, 2f)] public float midScale = 0.9f; 
+    [Range(0.1f, 2f)] public float farScale = 0.7f; 
 
     [Header("Depth Order (rendering)")]
     public bool depthOrderEnabled = true;
@@ -53,7 +53,6 @@ public class CarouselManager : MonoBehaviour
     private int currentCenterIndex = 0;
     private float wheelTimer = 0f;
 
-    // Map: itemIndex -> current slot (-half..+half)
     private readonly Dictionary<int, int> itemSlotMap = new Dictionary<int, int>();
     private readonly List<int> visibleIndices = new List<int>();
 
@@ -109,18 +108,15 @@ public class CarouselManager : MonoBehaviour
         HandleMouseWheel();
     }
 
-    // ---------- PUBLIC ----------
     public void SetFocus(int index)
     {
         focusedIndex = Mathf.Clamp(index, 0, items.Length - 1);
 
-        // Force focused item to be the center
         SnapToCenter(focusedIndex);
 
         if (depthOrderEnabled)
             ApplyDepthOrder();
 
-        // Focus always on top
         if (focusedIndex >= 0 && focusedIndex < items.Length)
             items[focusedIndex].SetAsLastSibling();
 
@@ -141,7 +137,6 @@ public class CarouselManager : MonoBehaviour
         ApplyDescription();
     }
 
-    // ---------- BUILD ----------
     private void BuildItemsFromPrefab()
     {
         for (int i = carouselContent.childCount - 1; i >= 0; i--)
@@ -180,7 +175,6 @@ public class CarouselManager : MonoBehaviour
         rt.anchorMax = new Vector2(0.5f, 0.5f);
         rt.pivot = new Vector2(0.5f, 0.5f);
 
-        // DO NOT touch size
         rt.anchoredPosition3D = Vector3.zero;
         rt.localScale = Vector3.one;
         rt.localRotation = Quaternion.identity;
@@ -201,7 +195,6 @@ public class CarouselManager : MonoBehaviour
         return n.Replace("_", " ");
     }
 
-    // ---------- ORIGINAL LOGIC ----------
     private void WireClearButtonsInItems()
     {
         foreach (var item in items)
@@ -245,7 +238,6 @@ public class CarouselManager : MonoBehaviour
         if (depthOrderEnabled)
             ApplyDepthOrder();
 
-        // Focus always on top if active
         if (focusedIndex >= 0 && focusedIndex < items.Length && items[focusedIndex].gameObject.activeSelf)
             items[focusedIndex].SetAsLastSibling();
     }
@@ -258,7 +250,6 @@ public class CarouselManager : MonoBehaviour
 
             float scale = baseScale;
 
-            // Focus > Hover > Depth scaling
             if (focusedIndex >= 0 && i == focusedIndex)
             {
                 scale = focusedScale;
@@ -271,7 +262,7 @@ public class CarouselManager : MonoBehaviour
             {
                 int dist = Mathf.Abs(slot);
                 if (dist == 0)
-                    scale = baseScale; // center if not focused
+                    scale = baseScale; 
                 else if (dist == 1)
                     scale = midScale;
                 else
@@ -291,11 +282,9 @@ public class CarouselManager : MonoBehaviour
             int da = itemSlotMap.TryGetValue(a, out int sa) ? Mathf.Abs(sa) : 999;
             int db = itemSlotMap.TryGetValue(b, out int sb) ? Mathf.Abs(sb) : 999;
 
-            // larger dist first => back
             int cmp = db.CompareTo(da);
             if (cmp != 0) return cmp;
 
-            // stable tie-breaker
             int sa2 = itemSlotMap[a];
             int sb2 = itemSlotMap[b];
             return sa2.CompareTo(sb2);
@@ -339,7 +328,6 @@ public class CarouselManager : MonoBehaviour
     {
         if (!enableMouseWheel) return;
 
-        // ✅ When something is focused/clicked -> keep it in center and disable scrolling
         if (disableScrollWhileFocused && focusedIndex >= 0)
             return;
 
