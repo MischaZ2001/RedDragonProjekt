@@ -1420,6 +1420,7 @@ GameObject:
   - component: {fileID: 4395392660230722835}
   - component: {fileID: 1946401053351313692}
   - component: {fileID: -6571880017656709956}
+  - component: {fileID: 2408959578065067191}
   m_Layer: 5
   m_Name: PanelBluprintDark
   m_TagString: Untagged
@@ -1552,6 +1553,21 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   dimGraphics: []
   freeAlpha: 0.55
+--- !u!114 &2408959578065067191
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6273458656096753809}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5629faf3642e8b7468b8817b0bcb0b27, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  description: 
+  index: 0
+  manager: {fileID: 0}
 --- !u!1 &6612077582340906753
 GameObject:
   m_ObjectHideFlags: 0
