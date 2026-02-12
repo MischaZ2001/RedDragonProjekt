@@ -1,66 +1,103 @@
-using LocationFinder.Core.Domain;
+using LocationFinder.UIUX.Favourites;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-using LocationFinder.System;
 
 namespace LocationFinder.UIUX.LocationList
 {
     public class LocationListItemView : MonoBehaviour
     {
-        [Header("Text")]
+        [Header("Text (vom Carousel-Panel)")]
         [SerializeField] private TMP_Text nameText;
         [SerializeField] private TMP_Text cityText;
         [SerializeField] private TMP_Text categoryText;
 
-        [Header("Favourite")]
-        [SerializeField] private Button starButton;
-        [SerializeField] private Image starIcon;
-        [SerializeField] private Sprite starOn;
-        [SerializeField] private Sprite starOff;
+        [Header("Favourite (Toggle)")]
+        [SerializeField] private Toggle favouriteToggle;
 
-        private Location _location;
+        [Header("Favourites Manager (1x in Scene)")]
+        [SerializeField] private FavouritesScrollManager favouritesManager;
 
-        public void Setup(Location location)
+        [Header("Optional: Manual Id (leer lassen => gameObject.name)")]
+        [SerializeField] private string manualId;
+
+        private bool _suppress;
+
+        private void Reset()
         {
-            _location = location;
+            if (!favouriteToggle) favouriteToggle = GetComponentInChildren<Toggle>(true);
+        }
 
-            nameText.text = location.Name;
-            cityText.text = location.City;
-            categoryText.text = location.Category;
+        private void Awake()
+        {
+            if (string.IsNullOrWhiteSpace(manualId))
+                manualId = gameObject.name;
 
-            RefreshStar();
-
-            if (starButton != null)
+            if (!favouriteToggle)
             {
-                starButton.onClick.RemoveAllListeners();
-                starButton.onClick.AddListener(ToggleFavourite);
+                Debug.LogError($"[LocationListItemView] favouriteToggle fehlt: {gameObject.name}");
+                return;
+            }
+
+            favouriteToggle.onValueChanged.AddListener(OnFavouriteChanged);
+        }
+
+        private void Start()
+        {
+            // Beim Start: gespeicherten Zustand anwenden
+            if (!favouritesManager)
+            {
+                // Falls du den Manager nicht per Inspector zuweisen willst:
+                favouritesManager = Object.FindAnyObjectByType<FavouritesScrollManager>();
+            }
+
+            if (!favouritesManager) return;
+
+            bool shouldBeOn = favouritesManager.IsSavedFavourite(manualId);
+
+            _suppress = true;
+            favouriteToggle.SetIsOnWithoutNotify(shouldBeOn);
+            _suppress = false;
+
+            // Wenn fav gespeichert ist, sicherstellen, dass der Eintrag in der ScrollView existiert
+            if (shouldBeOn)
+            {
+                var data = new FavouriteData(
+                    manualId,
+                    nameText ? nameText.text : "",
+                    cityText ? cityText.text : "",
+                    categoryText ? categoryText.text : ""
+                );
+
+                favouritesManager.AddFavourite(data);
             }
         }
 
-        private void ToggleFavourite()
+        private void OnFavouriteChanged(bool isOn)
         {
-            if (_location == null) return;
+            if (_suppress) return;
 
-            bool fav = FavouritesRuntime.Favs.ToggleFavourite(_location);
-            ApplyStar(fav);
-            Debug.Log("Toggled favourite for: " + _location.Id);
+            if (!favouritesManager)
+            {
+                favouritesManager = Object.FindAnyObjectByType<FavouritesScrollManager>();
+                if (!favouritesManager)
+                {
+                    Debug.LogError($"[LocationListItemView] favouritesManager NICHT gefunden: {gameObject.name}");
+                    return;
+                }
+            }
 
-        }
+            var data = new FavouriteData(
+                manualId,
+                nameText ? nameText.text : "",
+                cityText ? cityText.text : "",
+                categoryText ? categoryText.text : ""
+            );
 
-        private void RefreshStar()
-        {
-            if (_location == null) return;
+            Debug.Log($"[LocationListItemView] Toggle {manualId} => {isOn}");
 
-            bool fav = FavouritesRuntime.Favs.IsFavourite(_location);
-            ApplyStar(fav);
-        }
-
-        private void ApplyStar(bool fav)
-        {
-            if (starIcon != null && starOn != null && starOff != null)
-                starIcon.sprite = fav ? starOn : starOff;
+            if (isOn) favouritesManager.AddFavourite(data);
+            else favouritesManager.RemoveFavourite(manualId);
         }
     }
 }
-
