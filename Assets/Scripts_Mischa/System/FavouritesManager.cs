@@ -1,5 +1,6 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace LocationFinder.UIUX.Favourites
 {
@@ -15,7 +16,14 @@ namespace LocationFinder.UIUX.Favourites
         [SerializeField] private GameObject emptyState;
 
         [Header("Entry Layout")]
-        [SerializeField] private float entryHeight = 140f;
+        [SerializeField] private float entryHeight = 220f;
+
+        [Header("Visual Scaling (Inspector)")]
+        [Range(0.5f, 1.2f)]
+        [SerializeField] private float visualScale = 0.85f;
+
+        [SerializeField] private bool autoHeightFromPrefab = true;
+
 
         private readonly Dictionary<string, GameObject> _entriesById = new();
         private readonly HashSet<string> _savedIds = new();
@@ -38,11 +46,9 @@ namespace LocationFinder.UIUX.Favourites
         {
             if (string.IsNullOrWhiteSpace(data.Id)) return;
 
-            // Persist ID
             if (_savedIds.Add(data.Id))
                 SaveIds();
 
-            // UI already exists
             if (_entriesById.ContainsKey(data.Id))
             {
                 UpdateEmptyState();
@@ -94,18 +100,43 @@ namespace LocationFinder.UIUX.Favourites
             var rt = go.GetComponent<RectTransform>();
             if (!rt) return;
 
+            // 🔒 ROOT niemals skalieren (Layout-Sicherheit)
             rt.localScale = Vector3.one;
 
-            // full width, top anchored (VerticalLayoutGroup stacks top->down)
-            rt.anchorMin = new Vector2(0f, 1f);
-            rt.anchorMax = new Vector2(1f, 1f);
-            rt.pivot = new Vector2(0.5f, 1f);
+            // 🔧 VISUAL skalieren (Optik)
+            Transform visual = go.transform.Find("Visual");
+            if (visual != null)
+            {
+                visual.localScale = Vector3.one * visualScale;
+            }
+            else
+            {
+                Debug.LogWarning("[FavouritesScrollManager] Child 'Visual' fehlt im Prefab.");
+            }
 
-            rt.offsetMin = new Vector2(0f, rt.offsetMin.y);
-            rt.offsetMax = new Vector2(0f, rt.offsetMax.y);
+            // 📐 Layout-Höhe korrekt setzen
+            var le = go.GetComponent<LayoutElement>();
+            if (!le) le = go.AddComponent<LayoutElement>();
 
-            rt.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, entryHeight);
+            if (autoHeightFromPrefab)
+            {
+                // Originalhöhe * Scale
+                float baseHeight = rt.rect.height;
+                float finalHeight = baseHeight * visualScale;
+
+                le.minHeight = finalHeight;
+                le.preferredHeight = finalHeight;
+            }
+            else
+            {
+                // fallback: feste Höhe
+                le.minHeight = entryHeight;
+                le.preferredHeight = entryHeight;
+            }
+
+            le.flexibleHeight = 0f;
         }
+
 
         private void UpdateEmptyState()
         {

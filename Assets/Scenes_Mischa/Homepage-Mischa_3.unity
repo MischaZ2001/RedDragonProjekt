@@ -5713,6 +5713,8 @@ MonoBehaviour:
   favouriteItemPrefab: {fileID: 6273458656096753809, guid: 03935328d2c20b04e9725de3fc220a01, type: 3}
   emptyState: {fileID: 0}
   entryHeight: 100
+  visualScale: 0.85
+  autoHeightFromPrefab: 0
 --- !u!114 &1613712897
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6158,7 +6160,7 @@ MonoBehaviour:
     m_Top: 0
     m_Bottom: 0
   m_ChildAlignment: 7
-  m_Spacing: 280
+  m_Spacing: 100
   m_ChildForceExpandWidth: 1
   m_ChildForceExpandHeight: 0
   m_ChildControlWidth: 1
