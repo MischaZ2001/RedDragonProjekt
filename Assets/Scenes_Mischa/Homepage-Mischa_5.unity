@@ -3593,7 +3593,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &824295972
 Transform:
   m_ObjectHideFlags: 0
@@ -5773,7 +5773,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   freeUserCanvas: {fileID: 1369339768}
   panelPrefab: {fileID: 640595091}
-  parentOverride: {fileID: 640595091}
+  parentOverride: {fileID: 1580591789888311700, guid: 3e21f0404dce69d40966b5dfa12317f8, type: 3}
 --- !u!1 &1643985403
 GameObject:
   m_ObjectHideFlags: 0
@@ -6153,7 +6153,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &1773107963
 MonoBehaviour:
   m_ObjectHideFlags: 0

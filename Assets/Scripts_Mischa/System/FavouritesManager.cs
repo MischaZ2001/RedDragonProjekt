@@ -8,6 +8,7 @@ namespace LocationFinder.UIUX.Favourites
     {
         [Header("ScrollView Content (Viewport/Content)")]
         [SerializeField] private RectTransform favouritesContent;
+        [SerializeField] private RectTransform favouritesContentWith;
 
         [Header("Prefab for favourite entry (PROJECT prefab)")]
         [SerializeField] private GameObject favouriteItemPrefab;
@@ -61,13 +62,20 @@ namespace LocationFinder.UIUX.Favourites
                 return;
             }
 
+            if (!favouritesContentWith)
+            {
+                Debug.LogError("[FavouritesScrollManager] favouritesContentWith ist NULL. Assign Viewport/Content.");
+                return;
+            }
+
+
             if (!favouriteItemPrefab)
             {
                 Debug.LogError("[FavouritesScrollManager] favouriteItemPrefab ist NULL. Assign a PROJECT prefab.");
                 return;
             }
 
-            var go = Instantiate(favouriteItemPrefab, favouritesContent);
+            var go = Instantiate(favouriteItemPrefab, favouritesContent, favouritesContentWith);
             go.name = $"FAV_{data.Id}";
 
             ApplyLayout(go);
@@ -100,42 +108,41 @@ namespace LocationFinder.UIUX.Favourites
             var rt = go.GetComponent<RectTransform>();
             if (!rt) return;
 
-            // 🔒 ROOT niemals skalieren (Layout-Sicherheit)
+            // ROOT niemals skalieren
             rt.localScale = Vector3.one;
 
-            // 🔧 VISUAL skalieren (Optik)
+            // VISUAL skalieren
             Transform visual = go.transform.Find("Visual");
-            if (visual != null)
+            RectTransform visualRT = visual ? visual.GetComponent<RectTransform>() : null;
+
+            if (visualRT != null)
             {
-                visual.localScale = Vector3.one * visualScale;
+                visualRT.localScale = Vector3.one * visualScale;
             }
             else
             {
-                Debug.LogWarning("[FavouritesScrollManager] Child 'Visual' fehlt im Prefab.");
+                Debug.LogWarning("[FavouritesScrollManager] Child 'Visual' fehlt im Prefab oder ist kein RectTransform.");
             }
 
-            // 📐 Layout-Höhe korrekt setzen
+            // LayoutElement für VerticalLayoutGroup
             var le = go.GetComponent<LayoutElement>();
             if (!le) le = go.AddComponent<LayoutElement>();
 
-            if (autoHeightFromPrefab)
-            {
-                // Originalhöhe * Scale
-                float baseHeight = rt.rect.height;
-                float finalHeight = baseHeight * visualScale;
+            float finalHeight = entryHeight;
 
-                le.minHeight = finalHeight;
-                le.preferredHeight = finalHeight;
-            }
-            else
+            // AutoHeight: nimm lieber Visual-Höhe (ist stabiler als rt.rect.height beim Spawn)
+            if (autoHeightFromPrefab && visualRT != null && visualRT.rect.height > 0.01f)
             {
-                // fallback: feste Höhe
-                le.minHeight = entryHeight;
-                le.preferredHeight = entryHeight;
+                finalHeight = visualRT.rect.height * visualScale;
+                // kleine Sicherheitsmarge, damit nichts an Kanten abgeschnitten wird
+                finalHeight += 8f;
             }
 
+            le.minHeight = finalHeight;
+            le.preferredHeight = finalHeight;
             le.flexibleHeight = 0f;
         }
+
 
 
         private void UpdateEmptyState()

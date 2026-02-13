@@ -8,6 +8,7 @@ namespace RedDragon
         [Header("Canvas Roots")]
         [SerializeField] private GameObject authCanvas;
         [SerializeField] private GameObject appCanvas;
+        [SerializeField] private GameObject appCanvasWith;
 
         [Header("Panels")]
         [SerializeField] private GameObject loginPanel;
@@ -120,6 +121,9 @@ namespace RedDragon
 
             if (appCanvas != null) appCanvas.SetActive(true);
             else Debug.LogWarning("[AuthUI] appCanvas nicht zugewiesen!");
+
+            if (appCanvasWith != null) appCanvasWith.SetActive(false);
+            else Debug.LogWarning("[AuthUI] appCanvasWith nicht zugewiesen!");
         }
 
         private void SetMessage(string msg)
