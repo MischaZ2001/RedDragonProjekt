@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
@@ -10,16 +9,17 @@ namespace RedDragon
         [Header("Input")]
         [SerializeField] private TMP_InputField searchField;
 
-        [Header("Carousel Root (contains PanelBluprintDark1..n)")]
-        [SerializeField] private Transform carouselContentRoot;
+        [Header("Carousel Manager (required)")]
+        [SerializeField] private CarouselManager carouselManager;
 
-        [Header("Optional: if your panels are under a parent like ImageCarousel -> Content")]
-        [SerializeField] private bool includeInactiveOnScan = true;
+        [Header("Carousel Root (the Content that holds the instantiated panels)")]
+        [SerializeField] private Transform carouselContentRoot;
 
         private readonly List<SearchablePanel> panels = new();
 
-        private void Awake()
+        private void Start()
         {
+            // Manager baut in Start() -> wir cachen danach
             CachePanels();
 
             if (searchField != null)
@@ -34,9 +34,24 @@ namespace RedDragon
                 searchField.onValueChanged.RemoveListener(HandleSearchChanged);
         }
 
+        /// <summary>
+        /// Falls du sp‰ter Panels neu baust, kannst du das von auﬂen callen.
+        /// </summary>
+        public void RebuildCacheNow()
+        {
+            CachePanels();
+            ApplyFilter(searchField != null ? searchField.text : string.Empty);
+        }
+
         private void CachePanels()
         {
             panels.Clear();
+
+            if (carouselManager == null)
+            {
+                Debug.LogError("[CarouselSearchFilter] carouselManager is not assigned.");
+                return;
+            }
 
             if (carouselContentRoot == null)
             {
@@ -44,16 +59,15 @@ namespace RedDragon
                 return;
             }
 
-            // Scan all children panels (PanelBluprintDark prefabs)
-            var panelRoots = carouselContentRoot.GetComponentsInChildren<Transform>(includeInactiveOnScan);
-            foreach (var t in panelRoots)
+            // WICHTIG: Reihenfolge = SiblingIndex (0..n-1), damit Indizes zum Manager passen
+            for (int i = 0; i < carouselContentRoot.childCount; i++)
             {
-                // We only want top-level panel objects under carouselContentRoot
-                if (t.parent != carouselContentRoot) continue;
+                var child = carouselContentRoot.GetChild(i);
+                if (child == null) continue;
 
-                var searchable = t.GetComponent<SearchablePanel>();
+                var searchable = child.GetComponent<SearchablePanel>();
                 if (searchable == null)
-                    searchable = t.gameObject.AddComponent<SearchablePanel>(); // auto-add helper
+                    searchable = child.gameObject.AddComponent<SearchablePanel>();
 
                 searchable.BuildCache();
                 panels.Add(searchable);
@@ -69,21 +83,25 @@ namespace RedDragon
         {
             query = (query ?? string.Empty).Trim();
 
-            // Empty -> show all
+            // Empty -> remove filter
             if (string.IsNullOrWhiteSpace(query))
             {
-                foreach (var p in panels)
-                    p.SetVisible(true);
+                carouselManager.SetFilterAllowed(null);
                 return;
             }
 
             query = query.ToLowerInvariant();
 
-            foreach (var p in panels)
+            var allowed = new HashSet<int>();
+
+            // index i == child sibling index == manager item index
+            for (int i = 0; i < panels.Count; i++)
             {
-                bool match = p.Contains(query);
-                p.SetVisible(match);
+                if (panels[i] != null && panels[i].Contains(query))
+                    allowed.Add(i);
             }
+
+            carouselManager.SetFilterAllowed(allowed);
         }
     }
 
@@ -102,7 +120,6 @@ namespace RedDragon
             if (texts == null || texts.Length == 0)
                 texts = GetComponentsInChildren<TMP_Text>(true);
 
-            // Combine all text once for fast searching
             var combined = "";
             for (int i = 0; i < texts.Length; i++)
             {
@@ -119,12 +136,6 @@ namespace RedDragon
                 BuildCache();
 
             return cachedCombinedLower.Contains(queryLower);
-        }
-
-        public void SetVisible(bool visible)
-        {
-            if (gameObject.activeSelf == visible) return;
-            gameObject.SetActive(visible);
         }
     }
 }

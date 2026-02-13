@@ -7688,8 +7688,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   searchField: {fileID: 906792033}
+  carouselManager: {fileID: 1613712894}
   carouselContentRoot: {fileID: 640595091}
-  includeInactiveOnScan: 1
 --- !u!4 &879595658
 Transform:
   m_ObjectHideFlags: 0

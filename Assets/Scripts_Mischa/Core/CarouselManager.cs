@@ -6,21 +6,16 @@ public class CarouselManager : MonoBehaviour
 {
     [Header("Content Roots")]
     [SerializeField] private RectTransform carouselContentDark;     // e.g. Dark Canvas -> Content
-    [SerializeField] private RectTransform carouselContentWhite;    // e.g. White Canvas -> Content (optional)
+    [SerializeField] private RectTransform carouselContentWhite;    // optional
 
     [Header("Runtime Prefab Loading (Resources)")]
-    [Tooltip("Loads ALL prefabs from Assets/Resources/Dark and Assets/Resources/White")]
     [SerializeField] private bool loadFromResources = true;
-
-    [Tooltip("Folder under Assets/Resources for dark prefabs (your screenshot shows: Resources/Dark)")]
     [SerializeField] private string darkResourcesPath = "Dark";
-
-    [Tooltip("Folder under Assets/Resources for white prefabs (your screenshot shows: Resources/White)")]
     [SerializeField] private string whiteResourcesPath = "White";
 
     [Header("Fallback Prefabs (only used if loadFromResources = false)")]
-    [SerializeField] private GameObject darkPrefabFallback;   // used as random pool (single entry) if no resources
-    [SerializeField] private GameObject whitePrefabFallback;  // used as random pool (single entry) if no resources
+    [SerializeField] private GameObject darkPrefabFallback;
+    [SerializeField] private GameObject whitePrefabFallback;
 
     [Header("Instantiation")]
     [Min(1)][SerializeField] private int itemCount = 7;
@@ -81,6 +76,9 @@ public class CarouselManager : MonoBehaviour
     private GameObject[] darkPool;
     private GameObject[] whitePool;
 
+    // FILTER: null = no filter, otherwise allowed indices
+    private HashSet<int> filterAllowed;
+
     void Start()
     {
         if (!carouselContentDark)
@@ -102,7 +100,6 @@ public class CarouselManager : MonoBehaviour
         }
         else
         {
-            // fallback pools (single entry)
             darkPool = darkPrefabFallback ? new[] { darkPrefabFallback } : null;
             whitePool = whitePrefabFallback ? new[] { whitePrefabFallback } : null;
         }
@@ -193,15 +190,28 @@ public class CarouselManager : MonoBehaviour
         ApplyDescription();
     }
 
+    /// <summary>
+    /// Filter: null/empty => no filter. Otherwise only these indices are used for scrolling/slots.
+    /// </summary>
+    public void SetFilterAllowed(HashSet<int> allowed)
+    {
+        filterAllowed = (allowed == null || allowed.Count == 0) ? null : allowed;
+
+        focusedIndex = -1;
+
+        // center auf ein gültiges item setzen
+        currentCenterIndex = FindNextAllowed(currentCenterIndex, +1);
+
+        SnapToCenter(currentCenterIndex);
+        ApplyScales();
+        ApplyDescription();
+    }
+
     // ---------- RESOURCES ----------
     private void LoadPoolsFromResources()
     {
-        // Note: use GameObject to be robust (UI prefabs are still GameObjects)
         darkPool = Resources.LoadAll<GameObject>(darkResourcesPath);
         whitePool = Resources.LoadAll<GameObject>(whiteResourcesPath);
-
-        // Optional debug
-        // Debug.Log($"[CarouselManager] Loaded Dark: {darkPool?.Length ?? 0}, White: {whitePool?.Length ?? 0}");
     }
 
     // ---------- BUILD (RANDOM PER ITEM) ----------
@@ -220,7 +230,6 @@ public class CarouselManager : MonoBehaviour
                 return arr;
             }
 
-            // pro Item zufälliges Prefab
             var prefab = pool[UnityEngine.Random.Range(0, pool.Length)];
             if (!prefab)
             {
@@ -240,7 +249,9 @@ public class CarouselManager : MonoBehaviour
 
             ForceCenteredRect(rt);
 
-            // Name enthält auch prefab.name, damit du im Hierarchy siehst was gezogen wurde
+            // Wichtig: SiblingIndex == i (damit Filter-Indizes stabil sind)
+            go.transform.SetSiblingIndex(i);
+
             go.name = $"{baseItemName}_{i:00}_{label}_{prefab.name}";
 
             if (useNameAsDescription)
@@ -268,10 +279,7 @@ public class CarouselManager : MonoBehaviour
         rt.pivot = new Vector2(0.5f, 0.5f);
 
         rt.anchoredPosition3D = Vector3.zero;
-
-        // If your prefab needs its own scale, you can remove this:
         rt.localScale = Vector3.one;
-
         rt.localRotation = Quaternion.identity;
     }
 
@@ -315,9 +323,15 @@ public class CarouselManager : MonoBehaviour
         itemSlotMap.Clear();
         visibleIndices.Clear();
 
+        // Wenn gefiltert: center muss erlaubt sein
+        int centerAllowed = FindNextAllowed(currentCenterIndex, +1);
+        currentCenterIndex = centerAllowed;
+
+        var used = new HashSet<int>();
+
         for (int slot = -half; slot <= half; slot++)
         {
-            int itemIndex = Mod(currentCenterIndex + slot, n);
+            int itemIndex = GetSlotIndex(centerAllowed, slot, used);
 
             ActivateAndPlace(itemsDark, itemIndex, slot);
             if (itemsWhite != null) ActivateAndPlace(itemsWhite, itemIndex, slot);
@@ -329,6 +343,45 @@ public class CarouselManager : MonoBehaviour
         if (depthOrderEnabled) ApplyDepthOrder();
         SetFocusedOnTop();
     }
+
+    // slot -> index (respects filter, tries to avoid duplicates)
+    private int GetSlotIndex(int centerAllowed, int slot, HashSet<int> used)
+    {
+        int n = itemsDark.Length;
+
+        if (filterAllowed == null)
+        {
+            int index = Mod(centerAllowed + slot, n);
+            used.Add(index);
+            return index;
+        }
+
+        if (slot == 0)
+        {
+            used.Add(centerAllowed);
+            return centerAllowed;
+        }
+
+        int steps = Mathf.Abs(slot);
+        int dir = slot > 0 ? +1 : -1;
+
+        int indexFiltered = centerAllowed;
+
+        for (int s = 0; s < steps; s++)
+            indexFiltered = FindNextAllowed(indexFiltered + dir, dir);
+
+        // Schutz vor Duplikaten
+        int safety = 0;
+        while (used.Contains(indexFiltered) && safety < n)
+        {
+            indexFiltered = FindNextAllowed(indexFiltered + dir, dir);
+            safety++;
+        }
+
+        used.Add(indexFiltered);
+        return indexFiltered;
+    }
+
 
     private void ActivateAndPlace(RectTransform[] arr, int itemIndex, int slot)
     {
@@ -342,6 +395,26 @@ public class CarouselManager : MonoBehaviour
         for (int i = 0; i < arr.Length; i++)
             if (arr[i] != null)
                 arr[i].gameObject.SetActive(active);
+    }
+
+    // ---------- FILTER HELPERS ----------
+    private int FindNextAllowed(int start, int dir)
+    {
+        int n = itemsDark.Length;
+        int idx = Mod(start, n);
+
+        if (filterAllowed == null) return idx;
+
+        for (int i = 0; i < n; i++)
+        {
+            if (filterAllowed.Contains(idx))
+                return idx;
+
+            idx = Mod(idx + dir, n);
+        }
+
+        // falls allowed doch "leer" ist oder keinen gültigen index enthält
+        return Mod(start, n);
     }
 
     // ---------- SCALE ----------
@@ -410,8 +483,7 @@ public class CarouselManager : MonoBehaviour
                 arr[idx].SetSiblingIndex(i);
         }
 
-        if (hoverInFrontOfDepth &&
-            hoveredIndex >= 0 && hoveredIndex < arr.Length &&
+        if (hoverInFrontOfDepth && hoveredIndex >= 0 && hoveredIndex < arr.Length &&
             arr[hoveredIndex] != null && arr[hoveredIndex].gameObject.activeSelf)
         {
             arr[hoveredIndex].SetAsLastSibling();
@@ -457,7 +529,6 @@ public class CarouselManager : MonoBehaviour
     {
         Vector2 mouse = Input.mousePosition;
 
-        // hover check on dark set is enough (white mirrors)
         for (int i = itemsDark.Length - 1; i >= 0; i--)
         {
             if (itemsDark[i] == null || !itemsDark[i].gameObject.activeSelf) continue;
@@ -482,7 +553,9 @@ public class CarouselManager : MonoBehaviour
 
         int dir = scroll > 0 ? -1 : 1;
 
-        currentCenterIndex = Mod(currentCenterIndex + dir, itemsDark.Length);
+        // IMPORTANT: if filtered, jump to next allowed
+        currentCenterIndex = FindNextAllowed(currentCenterIndex + dir, dir);
+
         SnapToCenter(currentCenterIndex);
         ApplyScales();
 
