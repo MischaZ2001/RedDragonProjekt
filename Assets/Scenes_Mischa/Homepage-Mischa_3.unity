@@ -13029,7 +13029,7 @@ MonoBehaviour:
   darkPrefabFallback: {fileID: 0}
   whitePrefabFallback: {fileID: 0}
   itemCount: 30
-  baseItemName: Location
+  baseItemName: Loc
   useNameAsDescription: 1
   descriptionText: {fileID: 0}
   spacing: 250
@@ -13047,6 +13047,7 @@ MonoBehaviour:
   hoverInFrontOfDepth: 1
   visibleSlots: 5
   startCenterIndex: 0
+  favouritesManager: {fileID: 0}
 --- !u!114 &1613712895
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -13089,9 +13090,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 306d20b8d31036645a4d5f54923e2a5c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  favouritesContent: {fileID: 1819271033}
-  favouritesContentWith: {fileID: 1647136382}
-  favouriteItemPrefab: {fileID: 0}
+  favouritesContentDark: {fileID: 1819271033}
+  favouritesContentWhite: {fileID: 1647136382}
+  loadFromResources: 1
+  darkResourcesPath: Dark
+  whiteResourcesPath: White
+  favouriteItemPrefabDarkFallback: {fileID: 0}
+  favouriteItemPrefabWhiteFallback: {fileID: 0}
   emptyState: {fileID: 0}
   entryHeight: 100
   visualScale: 0.85

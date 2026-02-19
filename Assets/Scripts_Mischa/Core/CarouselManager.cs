@@ -1,7 +1,12 @@
-﻿using RedDragon;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+
+// Option B Injection:
+using LocationFinder.UIUX.Favourites;
+
+// SearchablePanel ist bei dir im Namespace RedDragon:
+using RedDragon;
 
 public class CarouselManager : MonoBehaviour
 {
@@ -59,6 +64,10 @@ public class CarouselManager : MonoBehaviour
     [Header("Start")]
     [SerializeField] private int startCenterIndex = 0;
 
+    // --- OPTION B: FAVOURITES MANAGER (Scene) ---
+    [Header("Favourites (Option B Injection)")]
+    [SerializeField] private FavouritesScrollManager favouritesManager;
+
     // Built items
     private RectTransform[] itemsDark;
     private RectTransform[] itemsWhite;
@@ -93,6 +102,10 @@ public class CarouselManager : MonoBehaviour
             Debug.LogError("CarouselManager: visibleSlots muss ungerade und >= 1 sein.");
             return;
         }
+
+        // Option B: find favourites manager once (no inspector drag needed)
+        if (!favouritesManager)
+            favouritesManager = FindObjectOfType<FavouritesScrollManager>();
 
         // Load pools
         if (loadFromResources)
@@ -262,14 +275,28 @@ public class CarouselManager : MonoBehaviour
             }
 
             int idx = i;
+
+            // Click proxy
             var proxy = go.GetComponent<CarouselClickProxy>();
             if (!proxy) proxy = go.AddComponent<CarouselClickProxy>();
             proxy.Init(this, idx);
-            var searchable = go.GetComponent<SearchablePanel>();
-            if (!searchable) searchable = go.AddComponent<SearchablePanel>();
-            searchable.ItemIndex = idx;
-            searchable.BuildCache();
 
+            // --- SEARCH SYSTEM: stable index on panel root ---
+            // (so search uses ItemIndex instead of sibling order)
+            var sp = go.GetComponent<SearchablePanel>();
+            if (!sp) sp = go.AddComponent<SearchablePanel>();
+            sp.ItemIndex = idx;
+            // optional: sp.BuildCache(); // kannst du lassen, SearchFilter macht Cache
+
+            // --- FAVOURITES OPTION B: inject manager + stable id (no manual locationId) ---
+            // If FavouriteToggleSource sits in child hierarchy:
+            var fav = go.GetComponentInChildren<FavouriteToggleSource>(true);
+            if (fav != null && favouritesManager != null)
+            {
+                // stabile ID: prefab.name (nicht go.name)
+                string stableId = prefab.name;
+                fav.Init(favouritesManager, stableId);
+            }
 
             arr[i] = rt;
         }
@@ -387,7 +414,6 @@ public class CarouselManager : MonoBehaviour
         used.Add(indexFiltered);
         return indexFiltered;
     }
-
 
     private void ActivateAndPlace(RectTransform[] arr, int itemIndex, int slot)
     {

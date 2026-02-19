@@ -17,7 +17,30 @@ namespace LocationFinder.UIUX
             }
 
             foreach (var s in sources)
-                s.SetManager(manager);
+            {
+                if (!s) continue;
+
+                // stabile ID automatisch ableiten:
+                // erwartet Namen wie: Panel_03_DARK_PanelBlprintDarkRussland
+                string stableId = ExtractStableIdFromName(s.gameObject.name);
+
+                // Fallback: name als ID (besser als gar nichts)
+                if (string.IsNullOrWhiteSpace(stableId))
+                    stableId = s.gameObject.name;
+
+                s.Init(manager, stableId);
+            }
+        }
+
+        private static string ExtractStableIdFromName(string goName)
+        {
+            if (string.IsNullOrWhiteSpace(goName)) return "";
+
+            int lastUnderscore = goName.LastIndexOf('_');
+            if (lastUnderscore >= 0 && lastUnderscore + 1 < goName.Length)
+                return goName.Substring(lastUnderscore + 1).Replace("(Clone)", "").Trim();
+
+            return goName.Replace("(Clone)", "").Trim();
         }
     }
 }

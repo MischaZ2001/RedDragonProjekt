@@ -1451,6 +1451,8 @@ GameObject:
   - component: {fileID: 1946401053351313692}
   - component: {fileID: -6571880017656709956}
   - component: {fileID: 2408959578065067191}
+  - component: {fileID: -4664479580534547557}
+  - component: {fileID: 8687291897791968511}
   m_Layer: 5
   m_Name: PanelBluprintDarkDeutschland
   m_TagString: Untagged
@@ -1598,6 +1600,38 @@ MonoBehaviour:
   description: 
   index: 0
   manager: {fileID: 0}
+--- !u!114 &-4664479580534547557
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6273458656096753809}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a227e0d77da6ef54e9f390637048eb5a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  nameText: {fileID: 1098183081082481291}
+  cityText: {fileID: 7930890700387489411}
+  categoryText: {fileID: 4438141248104291562}
+  removeButton: {fileID: 1967360817154090808}
+--- !u!114 &8687291897791968511
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6273458656096753809}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1fbf8cf6fddfffb4192658345a1d28d5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  favouriteToggle: {fileID: 1288151127858388947}
+  nameText: {fileID: 0}
+  cityText: {fileID: 0}
+  categoryText: {fileID: 0}
 --- !u!1 &6612077582340906753
 GameObject:
   m_ObjectHideFlags: 0
