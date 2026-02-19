@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using RedDragon;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -264,6 +265,11 @@ public class CarouselManager : MonoBehaviour
             var proxy = go.GetComponent<CarouselClickProxy>();
             if (!proxy) proxy = go.AddComponent<CarouselClickProxy>();
             proxy.Init(this, idx);
+            var searchable = go.GetComponent<SearchablePanel>();
+            if (!searchable) searchable = go.AddComponent<SearchablePanel>();
+            searchable.ItemIndex = idx;
+            searchable.BuildCache();
+
 
             arr[i] = rt;
         }

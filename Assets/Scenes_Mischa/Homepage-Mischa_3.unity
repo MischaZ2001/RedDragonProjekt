@@ -7688,8 +7688,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   searchField: {fileID: 906792033}
+  searchFieldWhite: {fileID: 843903543}
   carouselManager: {fileID: 1613712894}
   carouselContentRoot: {fileID: 640595091}
+  carouselContentRootWhite: {fileID: 1197245094}
 --- !u!4 &879595658
 Transform:
   m_ObjectHideFlags: 0
@@ -13026,7 +13028,7 @@ MonoBehaviour:
   whiteResourcesPath: White
   darkPrefabFallback: {fileID: 0}
   whitePrefabFallback: {fileID: 0}
-  itemCount: 10
+  itemCount: 30
   baseItemName: Location
   useNameAsDescription: 1
   descriptionText: {fileID: 0}
@@ -13089,7 +13091,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   favouritesContent: {fileID: 1819271033}
   favouritesContentWith: {fileID: 1647136382}
-  favouriteItemPrefab: {fileID: 6273458656096753809, guid: 03935328d2c20b04e9725de3fc220a01, type: 3}
+  favouriteItemPrefab: {fileID: 0}
   emptyState: {fileID: 0}
   entryHeight: 100
   visualScale: 0.85
