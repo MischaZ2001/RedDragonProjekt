@@ -222,6 +222,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6168029576204899298}
   - component: {fileID: 1719544772219996067}
+  - component: {fileID: 6533199923498989653}
   m_Layer: 5
   m_Name: FavoriteToggle
   m_TagString: Untagged
@@ -298,6 +299,20 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_IsOn: 1
+--- !u!114 &6533199923498989653
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2114706781689236929}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3fd8e7059e6147d4b93c5d5d84819180, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  toggle: {fileID: 1719544772219996067}
+  checkmarkGO: {fileID: 8337600320307281081}
 --- !u!1 &2218519137788521896
 GameObject:
   m_ObjectHideFlags: 0
@@ -311,6 +326,8 @@ GameObject:
   - component: {fileID: 4816864643032318890}
   - component: {fileID: 250049626562900399}
   - component: {fileID: 8816755630540697018}
+  - component: {fileID: 6079811708866037538}
+  - component: {fileID: 1743229632752148629}
   m_Layer: 5
   m_Name: PanelBluprintWithUSA
   m_TagString: Untagged
@@ -443,6 +460,38 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   dimGraphics: []
   freeAlpha: 0.55
+--- !u!114 &6079811708866037538
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2218519137788521896}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1fbf8cf6fddfffb4192658345a1d28d5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  favouriteToggle: {fileID: 1719544772219996067}
+  nameText: {fileID: 0}
+  cityText: {fileID: 0}
+  categoryText: {fileID: 0}
+--- !u!114 &1743229632752148629
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2218519137788521896}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a227e0d77da6ef54e9f390637048eb5a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  nameText: {fileID: 0}
+  cityText: {fileID: 0}
+  categoryText: {fileID: 0}
+  removeButton: {fileID: 0}
 --- !u!1 &2639722835489160604
 GameObject:
   m_ObjectHideFlags: 0

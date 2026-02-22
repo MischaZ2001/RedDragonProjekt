@@ -1,11 +1,14 @@
+using System;
+
 namespace LocationFinder.UIUX.Favourites
 {
-    public readonly struct FavouriteData
+    [Serializable]
+    public struct FavouriteData
     {
-        public readonly string Id;
-        public readonly string Name;
-        public readonly string City;
-        public readonly string Category;
+        public string Id;
+        public string Name;
+        public string City;
+        public string Category;
 
         public FavouriteData(string id, string name, string city, string category)
         {
